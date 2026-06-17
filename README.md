@@ -43,24 +43,24 @@ Dự án áp dụng mô hình **3-Layer Architecture** để tách biệt trách
 * SQL Server
 
 ### Các bước chạy
-1. **Clone dự án:**
+#### 1. **Clone dự án:**
    ```bash
-   git clone [https://github.com/Hoang254-emat/StudentManagementSystem](https://github.com/Hoang254-emat/StudentManagementSystem)
+   git clone https://github.com/Hoang254-emat/StudentManagementSystem
    ```
-2. **Chuyển đến thư mục dự án:**
+#### 2. **Chuyển đến thư mục dự án:**
    ```bash
    cd MyWebApi
    ```
-3. **Cấu hình Database:**
+#### 3. **Cấu hình Database:**
    Mở file appsettings.json, chỉnh sửa ConnectionStrings để kết nối tới SQL Server.
-4. **Cập nhật Database:**
+#### 4. **Cập nhật Database:**
    Chạy lệnh sau trong Terminal tại thư mục gốc:   
    ```bash
    dotnet ef database update
    ```
-5. **Chạy dự án**
+#### 5. **Chạy dự án**
    ```bash
    dotnet run
    ```
-6. **Truy cập**
+#### 6. **Truy cập**
    Mở trình duyệt và vào địa chỉ https://localhost:7294/swagger/ để xem tài liệu API.
