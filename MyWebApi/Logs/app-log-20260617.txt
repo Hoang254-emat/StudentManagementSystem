@@ -13,3 +13,8 @@
 2026-06-17 11:14:38.594 +07:00 [INF] Application started. Press Ctrl+C to shut down.
 2026-06-17 11:14:38.597 +07:00 [INF] Hosting environment: Development
 2026-06-17 11:14:38.599 +07:00 [INF] Content root path: C:\Users\Hoàng\Intern\MyWebApi\MyWebApi
+2026-06-17 11:51:35.088 +07:00 [INF] Now listening on: https://localhost:7294
+2026-06-17 11:51:35.164 +07:00 [INF] Now listening on: http://localhost:5041
+2026-06-17 11:51:35.260 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-17 11:51:35.262 +07:00 [INF] Hosting environment: Development
+2026-06-17 11:51:35.264 +07:00 [INF] Content root path: C:\Users\Hoàng\Intern\MyWebApi\MyWebApi

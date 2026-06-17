@@ -1,9 +1,6 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyWebApi.DTOs;
-using MyWebApi.Services.Implementations;
 using MyWebApi.Services.Interfaces;
 
 namespace MyWebApi.Controllers
