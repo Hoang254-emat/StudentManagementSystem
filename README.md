@@ -18,10 +18,9 @@ Hệ thống quản lý khóa học và giáo trình dành cho sinh viên.
 ### Công nghệ & Thư viện
 * **Framework:** Angular 
 * **Language:** TypeScript
-* **Styling:** SCSS, Bootstrap Icons (cho các icon biểu tượng)
-* **Components:** Standalone Components (Kiến trúc hiện đại không cần NgModule)
-* **Notification:** ngx-toastr (thông báo chuyên nghiệp)
-* **Data Handling:** Reactive Forms, RxJS (xử lý bất đồng bộ)
+* **Styling:** SCSS, Bootstrap Icons 
+* **Components:** Standalone Components 
+* **Data Handling:** Reactive Forms, RxJS 
 
 ### Kiến trúc Frontend
 Dự án được tổ chức theo mô hình Feature-based (theo nhóm chức năng):
