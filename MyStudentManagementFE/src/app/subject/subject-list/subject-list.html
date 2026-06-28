@@ -1,0 +1,97 @@
+<app-header></app-header>
+<div class="tt-container">
+  <h2 class="tt-title">Quản Lý Môn Học</h2>
+
+  <div class="tt-actions">
+    <button (click)="toggleForm()" class="tt-btn btn-ngoc-bich">
+      {{ isFormVisible ? 'Đóng Form' : 'Thêm Môn Học Mới' }}
+    </button>
+
+    <button (click)="downloadTemplate()" class="tt-btn btn-thuy-tinh">
+      Tải File Mẫu (Excel)
+    </button>
+
+    <input type="file" #fileInput (change)="onFileSelected($event)" accept=".xlsx" style="display: none;">
+    <button (click)="fileInput.click()" class="tt-btn btn-ngoc-bich">
+      Import Excel
+    </button>
+  </div>
+
+  @if (isFormVisible) {
+    <div class="tt-form-wrapper">
+      <app-add-subject 
+        [subject]="editingSubject"
+        (subjectAdded)="onSubjectAdded()">
+      </app-add-subject>
+    </div>
+  }
+
+  <div class="tt-filters">
+    <input 
+      type="text" 
+      [(ngModel)]="searchInput" 
+      (keyup.enter)="onSearch()"
+      placeholder="Nhập mã hoặc tên môn..." 
+      class="tt-input search-input">
+    
+    <select [(ngModel)]="sortOption" (change)="onSearch()" class="tt-select">
+      <option value="">-- Sắp xếp mặc định --</option>
+      <option value="SubjectName">Tên môn (A-Z)</option>
+      <option value="Id">Mã môn (Tăng dần)</option>
+    </select>
+
+    <button (click)="onSearch()" class="tt-btn btn-hoang-kim">Tìm kiếm</button>
+    <button (click)="resetSearch()" class="tt-btn btn-mac-dinh">Làm mới</button>
+  </div>
+
+  <table class="tt-table">
+    <thead>
+      <tr>
+        <th>Mã Môn</th>
+        <th>Tên Môn Học</th>
+        <th>Tín Chỉ</th>
+        <th>Giáo Viên Phụ Trách</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (s of subjects; track s.id) {
+        <tr>
+          <td class="tt-highlight">{{ s.id }}</td>
+          <td>{{ s.subjectName }}</td>
+          <td>{{ s.credits }}</td>
+          <td>{{ s.teacherName }}</td>
+          <td class="tt-table-actions">
+            <button (click)="editSubject(s)" class="tt-btn-small btn-hoang-kim">Sửa</button>
+            <button (click)="deleteSubject(s.id)" class="tt-btn-small btn-huyet-sac">Xóa</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="tt-pagination">
+    <div class="page-controls">
+      <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1" class="tt-btn-small btn-mac-dinh">
+        Trước
+      </button>
+      
+      <span class="page-info">
+        Trang {{ currentPage }} / {{ totalPages || 1 }}
+      </span>
+      
+      <button (click)="changePage(currentPage + 1)" [disabled]="currentPage >= totalPages || totalPages === 0" class="tt-btn-small btn-mac-dinh">
+        Sau
+      </button>
+    </div>
+
+    <div class="page-size">
+      <label for="pageSize">Hiển thị: </label>
+      <select id="pageSize" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange()" class="tt-select-small">
+        <option [ngValue]="5">5</option>
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="20">20</option>
+      </select>
+    </div>
+  </div>
+</div>

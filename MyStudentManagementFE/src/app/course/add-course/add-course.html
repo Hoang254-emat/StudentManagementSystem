@@ -1,0 +1,33 @@
+<form [formGroup]="courseForm" (ngSubmit)="onSubmit()" class="tt-form">
+  <div class="tt-form-group">
+    <label>Tên Khóa Học:</label>
+    <input formControlName="courseName" class="tt-input">
+  </div>
+  
+  <div class="tt-form-group">
+    <label>Lớp:</label>
+    <select formControlName="classId" class="tt-select">
+      @for (c of classes; track c.id) { <option [value]="c.id">{{ c.className }}</option> }
+    </select>
+  </div>
+
+  <div class="tt-form-group">
+    <label>Môn Học:</label>
+    <select formControlName="subjectId" class="tt-select">
+      @for (s of subjects; track s.id) { <option [value]="s.id">{{ s.subjectName }}</option> }
+    </select>
+  </div>
+
+  <div class="tt-form-group">
+    <label>Giáo Viên:</label>
+    <select formControlName="teacherId" class="tt-select">
+      @for (t of teachers; track t.id) { <option [value]="t.id">{{ t.name }}</option> }
+    </select>
+  </div>
+
+  <button type="submit" 
+          [disabled]="courseForm.invalid" 
+          class="tt-btn btn-hoang-kim w-100">
+    {{ courseData ? 'Cập Nhật' : 'Thêm Mới' }}
+  </button>
+</form>

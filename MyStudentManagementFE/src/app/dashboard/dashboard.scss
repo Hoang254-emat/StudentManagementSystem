@@ -1,0 +1,69 @@
+.dashboard-wrapper {
+  margin: 50px auto;
+  max-width: 900px;
+}
+
+.dashboard-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+  margin-top: 40px;
+  padding-bottom: 20px;
+}
+
+/* Style chung */
+.module-card {
+  background-color: #22252e;
+  border: 1px solid #3a3f4e;
+  border-radius: 12px;
+  width: 200px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  .icon {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    color: #d4af37; /* Ép màu Hoàng Kim */
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); /* Hào quang phát sáng */
+    transition: all 0.3s ease;
+  }
+
+  .active-card:hover .icon {
+    color: #f1c40f;
+    text-shadow: 0 0 25px rgba(241, 196, 15, 0.9);
+    transform: scale(1.1); 
+  }
+
+  h3 {
+    color: #d4af37;
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+  }
+
+  p {
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+}
+
+/* đã mở khóa */
+.active-card {
+  cursor: pointer;
+
+  &:hover {
+    border-color: #d4af37;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+    transform: translateY(-5px);
+  }
+}
+
+/* chưa phát triển */
+.disabled-card {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+}

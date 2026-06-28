@@ -1,0 +1,102 @@
+<app-header></app-header>
+<div class="tt-container">
+  <h2 class="tt-title">Quản Lý Sinh Viên</h2>
+
+  <div class="tt-actions">
+    <button (click)="toggleForm()" class="tt-btn btn-ngoc-bich">
+      {{ isFormVisible ? 'Đóng Form' : 'Thêm Sinh Viên Mới' }}
+    </button>
+
+    <button (click)="downloadTemplate()" class="tt-btn btn-thuy-tinh">
+      Tải File Mẫu (Excel)
+    </button>
+
+    <input type="file" #fileInput (change)="onFileSelected($event)" accept=".xlsx" style="display: none;">
+    <button (click)="fileInput.click()" class="tt-btn btn-ngoc-bich">
+      Import Excel
+    </button>
+  </div>
+
+  @if (isFormVisible) {
+    <div class="tt-form-wrapper">
+      <app-add-student 
+        [student]="editingStudent"
+        (studentAdded)="onStudentAdded()">
+      </app-add-student>
+    </div>
+  }
+
+  <div class="tt-filters">
+    <input 
+      type="text" 
+      [(ngModel)]="searchInput" 
+      (keyup.enter)="onSearch()"
+      placeholder="Nhập mã hoặc tên SV..." 
+      class="tt-input search-input">
+    
+    <select [(ngModel)]="sortOption" (change)="onSearch()" class="tt-select">
+      <option value="">-- Sắp xếp mặc định --</option>
+      <option value="Name">Tên (A-Z)</option>
+      <option value="Id">Mã SV (Tăng dần)</option>
+    </select>
+
+    <button (click)="onSearch()" class="tt-btn btn-hoang-kim">Tìm kiếm</button>
+    <button (click)="resetSearch()" class="tt-btn btn-mac-dinh">Làm mới</button>
+  </div>
+
+  <table class="tt-table">
+    <thead>
+      <tr>
+        <th>Mã SV</th>
+        <th>Họ và Tên</th>
+        <th>Ngày sinh</th>
+        <th>Lớp</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (s of students; track s.id) {
+        <tr>
+          <td class="tt-highlight">{{ s.id }}</td>
+          <td class="name-cell">
+          <img [src]="s.avatarUrl ? 'https://localhost:7294' + s.avatarUrl : 'https://ui-avatars.com/api/?name=' + s.name + '&background=22252e&color=d4af37'" 
+               class="mini-avatar" 
+               alt="avt">
+          <span>{{ s.name }}</span>
+          </td>
+          <td>{{ s.birthday | date:'dd/MM/yyyy' }}</td>
+          <td>{{ s.className }}</td>
+          <td class="tt-table-actions">
+            <button (click)="editStudent(s)" class="tt-btn-small btn-hoang-kim">Sửa</button>
+            <button (click)="deleteStudent(s.id)" class="tt-btn-small btn-huyet-sac">Xóa</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="tt-pagination">
+    <div class="page-controls">
+      <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1" class="tt-btn-small btn-mac-dinh">
+        Trước
+      </button>
+      
+      <span class="page-info">
+        Trang {{ currentPage }} / {{ totalPages || 1 }}
+      </span>
+      
+      <button (click)="changePage(currentPage + 1)" [disabled]="currentPage >= totalPages || totalPages === 0" class="tt-btn-small btn-mac-dinh">
+        Sau
+      </button>
+    </div>
+
+    <div class="page-size">
+      <label for="pageSize">Hiển thị: </label>
+      <select id="pageSize" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange()" class="tt-select-small">
+        <option [ngValue]="5">5</option>
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="20">20</option>
+      </select>
+    </div>
+  </div>
+</div>

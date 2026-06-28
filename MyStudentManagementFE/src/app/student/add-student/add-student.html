@@ -1,0 +1,31 @@
+<form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="tt-form">
+  <div class="tt-form-group">
+    <label>Mã Sinh Viên (ID):</label>
+    <input formControlName="id" type="text" class="tt-input" placeholder="Ví dụ: SV0001">
+    @if (studentForm.get('id')?.invalid && studentForm.get('id')?.touched) {
+      <small style="color: #c0392b;">* Mã SV là bắt buộc.</small>
+    }
+  </div>
+  
+  <div class="tt-form-group">
+    <label>Họ và Tên:</label>
+    <input formControlName="name" type="text" class="tt-input" placeholder="Nhập họ tên...">
+    @if (studentForm.get('name')?.invalid && studentForm.get('id')?.touched) {
+      <small style="color: #c0392b;">* Tên là bắt buộc.</small>
+    }
+  </div>
+  
+  <div class="tt-form-group">
+    <label>Ngày Sinh:</label>
+    <input formControlName="birthday" type="date" class="tt-input">
+  </div>
+
+  <div class="tt-form-group">
+    <label>Mã Lớp (Class ID):</label>
+    <input formControlName="classId" type="number" class="tt-input" placeholder="Nhập số ID lớp...">
+  </div>
+  
+  <button type="submit" [disabled]="studentForm.invalid" class="tt-btn btn-hoang-kim w-100">
+    {{ student ? 'Cập Nhật' : 'Thêm Sinh Viên' }}
+  </button>
+</form>

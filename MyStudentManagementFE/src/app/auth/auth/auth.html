@@ -1,0 +1,52 @@
+<div class="auth-wrapper">
+  <div class="auth-card tt-container">
+    <h2 class="tt-title">{{ isLoginMode ? 'Đăng Nhập Hệ Thống' : 'Kích Hoạt Tài Khoản' }}</h2>
+
+    @if (!isLoginMode) {
+      <div class="auth-tabs">
+        <button type="button" 
+                class="tab-btn" 
+                [class.active]="registerRole === 'student'"
+                (click)="setRegisterRole('student')">
+          Tài khoản Sinh Viên
+        </button>
+        <button type="button" 
+                class="tab-btn" 
+                [class.active]="registerRole === 'teacher'"
+                (click)="setRegisterRole('teacher')">
+          Tài khoản Giáo Viên
+        </button>
+      </div>
+    }
+
+    <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="tt-form">
+      
+      @if (!isLoginMode) {
+        <div class="tt-form-group">
+          <label>{{ registerRole === 'student' ? 'Mã Số Sinh Viên (ID):' : 'Mã Số Giáo Viên (ID):' }}</label>
+          <input formControlName="id" type="text" class="tt-input" placeholder="Nhập mã số được cấp để kích hoạt...">
+        </div>
+      }
+
+      <div class="tt-form-group">
+        <label>Tài khoản (Username):</label>
+        <input formControlName="username" type="text" class="tt-input" placeholder="Nhập tên tài khoản...">
+      </div>
+
+      <div class="tt-form-group">
+        <label>Mật khẩu (Password):</label>
+        <input formControlName="password" type="password" class="tt-input" placeholder="Nhập mật khẩu...">
+      </div>
+
+      <button type="submit" [disabled]="authForm.invalid" class="tt-btn btn-hoang-kim w-100">
+        {{ isLoginMode ? 'Đăng Nhập' : 'Xác Nhận Đăng Ký' }}
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <span (click)="toggleMode()">
+        {{ isLoginMode ? 'Chưa kích hoạt tài khoản? Đăng ký ngay tại đây' : 'Đã có tài khoản? Quay lại Đăng nhập' }}
+      </span>
+    </div>
+  </div>
+</div>

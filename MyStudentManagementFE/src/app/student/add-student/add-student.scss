@@ -1,0 +1,33 @@
+.tt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .tt-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    
+    label {
+      font-size: 0.9rem;
+      color: #d4af37;
+      font-weight: 500;
+    }
+    
+    .tt-input {
+      background-color: #111;
+      color: #d4af37;
+      border: 1px solid #3a3f4e;
+      padding: 10px;
+      border-radius: 6px;
+      &:focus { border-color: #d4af37; outline: none; }
+    }
+  }
+
+  .w-100 { 
+    width: 100%; 
+    margin-top: 10px;
+    padding: 12px;
+    cursor: pointer;
+  }
+}

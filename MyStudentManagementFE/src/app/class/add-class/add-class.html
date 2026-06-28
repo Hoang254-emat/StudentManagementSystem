@@ -1,0 +1,16 @@
+<form [formGroup]="classForm" (ngSubmit)="onSubmit()" class="tt-form">
+  <div class="tt-form-group">
+    <label>Tên Lớp:</label>
+    <input formControlName="className" class="tt-input" placeholder="Ví dụ: 12A1">
+  </div>
+  <div class="tt-form-group">
+    <label>GV Chủ Nhiệm:</label>
+    <select formControlName="teacherId" class="tt-select">
+      <option value="" disabled selected>-- Chọn GV --</option>
+      @for (t of teachers; track t.id) { <option [value]="t.id">{{ t.name }}</option> }
+    </select>
+  </div>
+  <button type="submit" [disabled]="classForm.invalid" class="tt-btn btn-hoang-kim w-100">
+    {{ classData ? 'Cập Nhật' : 'Thêm Mới' }}
+  </button>
+</form>

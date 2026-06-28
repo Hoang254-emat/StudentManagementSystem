@@ -1,0 +1,92 @@
+/* GLOBAL STYLES */
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap');
+
+$bg-dark: #16181d;
+$gold: #d4af37;
+$gold-hover: #f1c40f;
+$text-main: #e0e0e0;
+$border-color: #3a3f4e;
+
+body {
+  margin: 0;
+  font-family: 'Lora', 'Times New Roman', serif;
+  background-color: #0f1115; /* Nền tối tổng thể */
+  color: $text-main;
+}
+
+/* Các Box chứa Form/Bảng */
+.tt-container, .tt-form {
+  background-color: $bg-dark;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid $border-color;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+}
+
+/* Tiêu đề */
+.tt-title {
+  color: $gold;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  margin-bottom: 25px;
+  border-bottom: 1px solid $gold;
+  padding-bottom: 10px;
+}
+
+/* Form Group & Label */
+.tt-form-group {
+  margin-bottom: 15px;
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #bbb;
+  }
+}
+
+/* Input & Select */
+.tt-input, .tt-select {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #111;
+  color: $gold;
+  border: 1px solid $border-color;
+  padding: 10px 15px;
+  border-radius: 6px;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: $gold;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+  }
+}
+
+/* Nút bấm (Buttons) */
+.tt-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: inherit;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none !important;
+  }
+}
+
+.btn-hoang-kim {
+  background: linear-gradient(145deg, $gold, #aa8c2c);
+  color: #111;
+  &:hover:not([disabled]) { box-shadow: 0 0 12px $gold; background: $gold-hover; }
+}

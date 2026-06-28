@@ -1,0 +1,42 @@
+<form [formGroup]="subjectForm" (ngSubmit)="onSubmit()" class="tt-form">
+  <div class="tt-form-group">
+    <label>Mã Môn Học (ID):</label>
+    <input formControlName="id" type="text" class="tt-input" placeholder="Ví dụ: KP0001">
+    @if (subjectForm.get('id')?.invalid && subjectForm.get('id')?.touched) {
+      <small style="color: #c0392b;">* Mã môn là bắt buộc.</small>
+    }
+  </div>
+  
+  <div class="tt-form-group">
+    <label>Tên Môn Học:</label>
+    <input formControlName="subjectName" type="text" class="tt-input" placeholder="Nhập tên môn...">
+    @if (subjectForm.get('subjectName')?.invalid && subjectForm.get('subjectName')?.touched) {
+      <small style="color: #c0392b;">* Tên môn từ 3-150 ký tự.</small>
+    }
+  </div>
+  
+  <div class="tt-form-group">
+    <label>Số Tín Chỉ:</label>
+    <input formControlName="credits" type="number" class="tt-input" placeholder="Ví dụ: 3">
+    @if (subjectForm.get('credits')?.invalid && subjectForm.get('credits')?.touched) {
+      <small style="color: #c0392b;">* Tín chỉ từ 1 đến 10.</small>
+    }
+  </div>
+
+  <div class="tt-form-group">
+    <label>Giáo viên phụ trách:</label>
+    <select formControlName="teacherId" class="tt-select">
+      <option value="" disabled selected>-- Chọn giáo viên --</option>
+      @for (t of teachers; track t.id) {
+        <option [value]="t.id">{{ t.name }}</option>
+      }
+    </select>
+    @if (subjectForm.get('teacherId')?.invalid && subjectForm.get('teacherId')?.touched) {
+      <small style="color: #c0392b;">* Vui lòng chọn giáo viên phụ trách.</small>
+    }
+  </div>
+  
+  <button type="submit" [disabled]="subjectForm.invalid" class="tt-btn btn-hoang-kim w-100">
+    {{ subject ? 'Cập Nhật' : 'Thêm Mới' }}
+  </button>
+</form>

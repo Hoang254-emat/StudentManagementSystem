@@ -1,0 +1,31 @@
+<header class="tt-header">
+  <div class="header-left" routerLink="/dashboard">
+    <i class="fa-solid fa-vihara logo-icon"></i>
+    <span class="web-name">Hệ Thống Đào Tạo</span>
+  </div>
+
+  <div class="header-right">
+    <div class="avatar-wrapper" (click)="toggleDropdown()">
+      @if (userInfo) {
+        <img [src]="userInfo.avatarUrl ? 'https://localhost:7294' + userInfo.avatarUrl : 'https://ui-avatars.com/api/?name=' + userInfo.name + '&background=22252e&color=d4af37'" 
+             alt="Avatar" class="user-avatar">
+        <span style="color: #e0e0e0; font-size: 0.9rem; font-weight: 500;">{{ userInfo.name }}</span>
+      } 
+      @else {
+        <img src="https://ui-avatars.com/api/?name=User&background=22252e&color=d4af37" alt="Avatar" class="user-avatar">
+      }
+      <i class="fa-solid fa-caret-down caret-icon"></i>
+      
+      @if (isDropdownOpen) {
+        <div class="dropdown-menu">
+          <div class="dropdown-item" (click)="viewProfile()">
+            <i class="fa-solid fa-user"></i> Hồ sơ cá nhân
+          </div>
+          <div class="dropdown-item logout-item" (click)="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</header>

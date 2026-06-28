@@ -1,0 +1,50 @@
+<app-header></app-header>
+<div class="tt-container profile-wrapper">
+  <h2 class="tt-title">Hồ Sơ Tu Luyện</h2>
+
+  @if (profileInfo) {
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="avatar-hover-container">
+          <img [src]="profileInfo.avatarUrl ? 'https://localhost:7294' + profileInfo.avatarUrl : 'https://ui-avatars.com/api/?name=' + profileInfo.name + '&background=22252e&color=d4af37&size=150'" 
+               alt="Avatar" class="profile-avatar">
+          <div class="avatar-overlay">
+            <button class="overlay-btn" (click)="viewAvatar()"><i class="fa-solid fa-eye"></i> Xem</button>
+            <button class="overlay-btn" (click)="fileInput.click()"><i class="fa-solid fa-camera"></i> Đổi</button>
+          </div>
+          <input type="file" #fileInput style="display: none;" accept="image/*" (change)="onFileSelected($event)">
+        </div>
+        <h3>{{ profileInfo.name }}</h3>
+        <span class="role-badge">{{ userType === 'student' ? 'Ngoại Môn Đệ Tử' : 'Trưởng Lão Tông Môn' }}</span>
+      </div>
+
+      <div class="profile-body">
+        <div class="info-row">
+          <span class="label"><i class="fa-solid fa-id-badge"></i> Pháp Danh (ID):</span>
+          <span class="value">{{ profileInfo.id }}</span>
+        </div>
+        
+        @if (userType === 'teacher') {  
+          <div class="info-row">
+            <span class="label"><i class="fa-solid fa-envelope"></i> Email:</span>
+            <span class="value">{{ profileInfo.email }}</span>
+          </div>
+        }
+
+        @if (userType === 'student') {
+          <div class="info-row">
+            <span class="label"><i class="fa-solid fa-calendar-days"></i> Ngày Giáng Sinh:</span>
+            <span class="value">{{ profileInfo.birthday | date:'dd/MM/yyyy' }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label"><i class="fa-solid fa-vihara"></i> Tông Môn (Lớp):</span>
+            <span class="value">{{ profileInfo.className }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="loading-text">Đang dùng thần thức tra cứu hồ sơ...</div>
+  }
+</div>

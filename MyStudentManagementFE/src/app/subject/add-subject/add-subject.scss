@@ -1,0 +1,18 @@
+.tt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .tt-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    
+    label {
+      font-size: 0.9rem;
+      color: #d4af37;
+    }
+  }
+
+  .w-100 { width: 100%; margin-top: 10px; }
+}
