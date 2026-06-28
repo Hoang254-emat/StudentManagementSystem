@@ -5,6 +5,7 @@ using MyWebApi.DTOs;
 using MyWebApi.Helpers;
 using MyWebApi.Services.Implementations;
 using MyWebApi.Services.Interfaces;
+using ClosedXML.Excel;
 
 namespace MyWebApi.Controllers
 {
@@ -55,7 +56,96 @@ namespace MyWebApi.Controllers
             if (!result)
                 return BadRequest("Failed to create teacher.");
             cache.Remove(TeacherListCacheKey);
-            return Ok("Teacher created successfully.");
+            return Ok(new { message = "Teacher created successfully." });
+        }
+
+        /// <summary>
+        /// Creates new teachers using an Excel file.
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpPost("import")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ImportTeachersFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Vui lòng chọn file Excel hợp lệ!");
+
+            var teachersToInsert = new List<CreateTeacherDto>();
+
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1);
+                        var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
+
+                        foreach (var row in rows)
+                        {
+                            var teacher = new CreateTeacherDto
+                            {
+                                Id = row.Cell(1).GetValue<string>(),
+                                Name = row.Cell(2).GetValue<string>(),
+                                Email = row.Cell(3).GetValue<string>() 
+                            };
+                            teachersToInsert.Add(teacher);
+                        }
+                    }
+                }
+
+                foreach (var tch in teachersToInsert)
+                {
+                    await teacherService.CreateTeacherAsync(tch);
+                }
+
+                cache.Remove(TeacherListCacheKey);
+
+                return Ok(new { message = $"Đã import thành công {teachersToInsert.Count} giáo viên!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi khi đọc file: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Download example Excel file for Teachers
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("template")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult DownloadTemplate()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("TeacherTemplate");
+
+                // Header
+                worksheet.Cell(1, 1).Value = "ID";
+                worksheet.Cell(1, 2).Value = "Name";
+                worksheet.Cell(1, 3).Value = "Email";
+
+                var headerRow = worksheet.Row(1);
+                headerRow.Style.Font.Bold = true;
+                headerRow.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+                // Dummy data
+                worksheet.Cell(2, 1).Value = "GV0001";
+                worksheet.Cell(2, 2).Value = "Kiếm Thần";
+                worksheet.Cell(2, 3).Value = "kiemthan@tongmon.com";
+
+                worksheet.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Teacher_Import_Template.xlsx");
+                }
+            }
         }
 
         /// <summary>
@@ -81,9 +171,15 @@ namespace MyWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UploadAvatar(string id, IFormFile file)
         {
-            var url = await fileService.UploadFileAsync(file, "avatars");
-            await teacherService.UpdateAvatarUrlAsync(id, url);
-            return Ok(new { url });
+            var result = await fileService.UploadFileAsync(file, "avatars");
+
+            if (!result.Success)
+            {
+                return BadRequest(new { message = result.Message });
+            }
+
+            await teacherService.UpdateAvatarUrlAsync(id, result.Url!);
+            return Ok(new { url = result.Url });
         }
 
         /// <summary>
@@ -99,9 +195,9 @@ namespace MyWebApi.Controllers
                 return BadRequest(ModelState);
             var result = await teacherService.UpdateTeacherAsync(id, updateDto);
             if (!result)
-                return NotFound("Teacher not found.");
+                return NotFound(new { message = "Teacher not found" });
             cache.Remove(TeacherListCacheKey);
-            return Ok("Teacher updated successfully.");
+            return Ok(new { message = "Teacher updated successfully." });
         }
 
         /// <summary>
@@ -115,9 +211,9 @@ namespace MyWebApi.Controllers
         {
             var result = await teacherService.DeleteTeacherAsync(id);
             if (!result)
-                return NotFound("Teacher not found.");
+                return NotFound(new { message = "Teacher not found" });
             cache.Remove(TeacherListCacheKey);
-            return Ok("Teacher deleted successfully.");
+            return Ok(new { message = "Teacher deleted successfully." });
         }
     }
 }

@@ -34,6 +34,15 @@ namespace MyWebApi
 
             builder.Services.AddMemoryCache();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngular",
+                    policy => policy.WithOrigins("http://localhost:4200") 
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod()
+                                    .AllowCredentials());
+            });
+
             builder.Services.AddSwaggerGen(options =>
             {
                 var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -134,6 +143,7 @@ namespace MyWebApi
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AllowAngular");
             app.UseAuthentication();
             app.UseAuthorization();
 

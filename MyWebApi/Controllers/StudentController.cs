@@ -1,20 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using MyWebApi.DTOs;
 using MyWebApi.Helpers;
 using MyWebApi.Services.Implementations;
 using MyWebApi.Services.Interfaces;
+using ClosedXML.Excel;
 
 namespace MyWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentController(IStudentService studentService, IFileService fileService, IMemoryCache cache, IUserAccessor userAccessor) : ControllerBase
+    public class StudentController(IStudentService studentService, IFileService fileService, IUserAccessor userAccessor) : ControllerBase
     {
-        private const string StudentListCacheKey = "StudentList_Cache";
-
         /// <summary>
         /// Retrieves a paginated list of students.
         /// </summary>
@@ -28,30 +26,27 @@ namespace MyWebApi.Controllers
         [ProducesResponseType(typeof(PagedResponse<StudentDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllStudents([FromQuery] string? keyword, [FromQuery] string? sort, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            string cacheKey = $"StudentList_{keyword ?? "none"}_{sort ?? "none"}_{page}_{pageSize}";
-
-            if (!cache.TryGetValue(cacheKey, out PagedResponse<StudentDto>? result))
-            {
-                result = await studentService.GetAllStudentsAsync(keyword, sort, page, pageSize);
-                cache.Set(cacheKey, result, new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(2) });
-            }
+            var result = await studentService.GetAllStudentsAsync(keyword, sort, page, pageSize);
             return Ok(result);
         }
 
         /// <summary>
         /// Uploads an avatar image for a specific student.
         /// </summary>
-        /// <param name="id">The unique ID of the student.</param>
-        /// <param name="file">The image file to upload.</param>
-        /// <returns>The URL of the uploaded avatar.</returns>
         [Authorize]
         [HttpPost("{id}/avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UploadAvatar(string id, IFormFile file)
         {
-            var url = await fileService.UploadFileAsync(file, "avatars");
-            await studentService.UpdateAvatarUrlAsync(id, url);
-            return Ok(new { url });
+            var result = await fileService.UploadFileAsync(file, "avatars");
+
+            if (!result.Success)
+            {
+                return BadRequest(new { message = result.Message });
+            }
+
+            await studentService.UpdateAvatarUrlAsync(id, result.Url!);
+            return Ok(new { url = result.Url });
         }
 
         /// <summary>
@@ -84,8 +79,98 @@ namespace MyWebApi.Controllers
         {
             var success = await studentService.CreateStudentAsync(createDto);
             if (!success) return Conflict("A student with the same ID already exists.");
-            cache.Remove(StudentListCacheKey);
+
             return CreatedAtAction(nameof(GetStudentById), new { id = createDto.Id }, createDto);
+        }
+
+        /// <summary>
+        /// Creates a new student with Excel file.
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpPost("import")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ImportStudentsFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Vui lòng chọn file Excel hợp lệ!");
+
+            var studentsToInsert = new List<CreateStudentDto>();
+
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1); 
+                        var rows = worksheet.RangeUsed().RowsUsed().Skip(1); 
+
+                        foreach (var row in rows)
+                        {
+                            var student = new CreateStudentDto
+                            {
+                                Id = row.Cell(1).GetValue<string>(),
+                                Name = row.Cell(2).GetValue<string>(),
+                                Birthday = row.Cell(3).GetValue<DateTime>(),
+                                ClassId = row.Cell(4).GetValue<int>()
+                            };
+                            studentsToInsert.Add(student);
+                        }
+                    }
+                }
+
+                foreach (var std in studentsToInsert)
+                {
+                    await studentService.CreateStudentAsync(std);
+                }
+
+                return Ok(new { message = $"Đã import thành công {studentsToInsert.Count} sinh viên!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi khi đọc file: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Download example Excel file
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("template")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult DownloadTemplate()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("StudentTemplate");
+
+                // Header
+                worksheet.Cell(1, 1).Value = "ID";
+                worksheet.Cell(1, 2).Value = "Name";
+                worksheet.Cell(1, 3).Value = "Birthday (DD-MM-YYYY)";
+                worksheet.Cell(1, 4).Value = "ClassId";
+
+                var headerRow = worksheet.Row(1);
+                headerRow.Style.Font.Bold = true;
+                headerRow.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+                // Dummy data
+                worksheet.Cell(2, 1).Value = "SV001";
+                worksheet.Cell(2, 2).Value = "Nguyễn Văn Mẫu";
+                worksheet.Cell(2, 3).Value = "2004-01-01";
+                worksheet.Cell(2, 4).Value = 1;
+
+                worksheet.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Student_Import_Template.xlsx");
+                }
+            }
         }
 
         /// <summary>
@@ -121,7 +206,7 @@ namespace MyWebApi.Controllers
 
             var success = await studentService.UpdateStudentAsync(id, updateDto);
             if (!success) return NotFound();
-            cache.Remove(StudentListCacheKey);
+
             return NoContent();
         }
 
@@ -142,7 +227,7 @@ namespace MyWebApi.Controllers
 
             var success = await studentService.DeleteStudentAsync(id);
             if (!success) return NotFound();
-            cache.Remove(StudentListCacheKey);
+
             return NoContent();
         }
     }

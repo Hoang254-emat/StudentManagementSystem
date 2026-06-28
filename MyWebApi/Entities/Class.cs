@@ -10,7 +10,8 @@ namespace MyWebApi.Entities
         public string ClassName { get; set; } = string.Empty;
 
         public ICollection<Course> Courses { get; set; } = [];
-
         public List<Student> Students { get; set; } = [];
+        public string? TeacherId { get; set; }
+        public virtual Teacher? HomeroomTeacher { get; set; }
     }
 }

@@ -7,5 +7,8 @@ namespace MyWebApi.DTOs
         [Required(ErrorMessage = "Class name is required.")]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Class name must be between 6 and 100 characters.")]
         public string ClassName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Homeroom teacher ID is required.")]
+        public string? TeacherId { get; set; }
     }
 }

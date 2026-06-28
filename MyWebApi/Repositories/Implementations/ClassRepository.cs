@@ -11,7 +11,7 @@ namespace MyWebApi.Repositories.Implementations
 
         public async Task<IEnumerable<Class>> GetAllAsync(string? keyword, string? sort, int page, int pageSize)
         {
-            var query = _context.Classes.AsQueryable();
+            var query = _context.Classes.Include(c => c.HomeroomTeacher).AsQueryable();
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(s => s.ClassName.Contains(keyword) || s.Id.ToString().Contains(keyword));
@@ -37,7 +37,7 @@ namespace MyWebApi.Repositories.Implementations
                 query = query.Where(t => t.ClassName.Contains(keyword) || t.Id.ToString().Contains(keyword));
             return await query.CountAsync();
         }
-        public async Task<Class?> GetByIdAsync(int id) => await _context.Classes.FindAsync(id);
+        public async Task<Class?> GetByIdAsync(int id) => await _context.Classes.Include(c => c.HomeroomTeacher).FirstOrDefaultAsync(c => c.Id == id);
         public async Task AddAsync(Class @class) 
         { 
             await _context.Classes.AddAsync(@class); 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyWebApi.Data;
 
@@ -11,9 +12,11 @@ using MyWebApi.Data;
 namespace MyWebApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260626075415_AddHomeroomTeacherToClass")]
+    partial class AddHomeroomTeacherToClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,6 +65,9 @@ namespace MyWebApi.Migrations
                     b.Property<string>("CurriculumUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("SubjectId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -73,6 +79,8 @@ namespace MyWebApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClassId");
+
+                    b.HasIndex("StudentId");
 
                     b.HasIndex("SubjectId");
 
@@ -211,6 +219,10 @@ namespace MyWebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MyWebApi.Entities.Student", null)
+                        .WithMany("Courses")
+                        .HasForeignKey("StudentId");
+
                     b.HasOne("MyWebApi.Entities.Subject", "Subject")
                         .WithMany()
                         .HasForeignKey("SubjectId")
@@ -271,6 +283,11 @@ namespace MyWebApi.Migrations
             modelBuilder.Entity("MyWebApi.Entities.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("MyWebApi.Entities.Student", b =>
+                {
+                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("MyWebApi.Entities.Teacher", b =>

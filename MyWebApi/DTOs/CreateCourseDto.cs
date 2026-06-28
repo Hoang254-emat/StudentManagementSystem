@@ -12,8 +12,7 @@ namespace MyWebApi.DTOs
         public string SubjectId { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Teacher ID is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Invalid teacher ID.")]
-        public int TeacherId { get; set; }
+        public string TeacherId { get; set; }
 
         [Required(ErrorMessage = "Class ID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "Invalid class ID.")]

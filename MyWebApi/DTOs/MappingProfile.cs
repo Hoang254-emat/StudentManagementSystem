@@ -24,7 +24,9 @@ namespace MyWebApi.DTOs
             CreateMap<UpdateSubjectDto, Subject>()
                 .ForMember(dest => dest.SubjectId, opt => opt.MapFrom(src => src.Id));
 
-            CreateMap<Class, ClassDto>();
+            CreateMap<Class, ClassDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.TeacherName, opt => opt.MapFrom(src => src.HomeroomTeacher.Name ?? "No Homeroom Teacher"));
             CreateMap<CreateClassDto, Class>();
 
             CreateMap<Course, CourseDto>()

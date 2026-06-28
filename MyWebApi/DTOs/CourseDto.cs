@@ -8,5 +8,6 @@
         public string SubjectId { get; set; } = string.Empty;
         public string SubjectName { get; set; } = string.Empty;
         public string TeacherName { get; set; } = string.Empty;
+        public string? CurriculumUrl { get; set; }
     }
 }

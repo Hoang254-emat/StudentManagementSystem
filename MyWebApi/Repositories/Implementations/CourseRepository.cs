@@ -11,7 +11,11 @@ namespace MyWebApi.Repositories.Implementations
 
         public async Task<IEnumerable<Course>> GetAllAsync(string? keyword, string? sort, int page, int pageSize)
         {
-            var query = _context.Courses.AsQueryable();
+            var query = _context.Courses
+                .Include(c => c.Teacher)
+                .Include(c => c.Subject)
+                .Include(c => c.Class)
+                .AsQueryable();
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(s => s.CourseName.Contains(keyword) || s.Id.ToString().Contains(keyword));

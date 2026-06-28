@@ -1,6 +1,27 @@
-# Visual Studio
+# Bỏ qua các file cấu hình IDE cá nhân
 .vs/
-bin/
-obj/
+.vscode/
 *.user
 *.suo
+
+# Bỏ qua folder tạm của .NET
+**/bin/
+**/obj/
+
+# Bỏ qua folder tạm của Angular/Node
+**/node_modules/
+**/dist/
+**/.angular/
+**/.cache/
+
+# Bỏ qua file môi trường (nếu có chứa mật khẩu/secret)
+appsettings.json
+.env
+
+# Bỏ qua log và file tạm
+**/Logs/
+**/wwwroot/avatars/
+**/wwwroot/curriculum/
+
+# Bỏ qua file build tạm của .NET
+*.slnx

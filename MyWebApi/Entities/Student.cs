@@ -12,7 +12,5 @@ namespace MyWebApi.Entities
 
         public int ClassId { get; set; }
         public Class? Class { get; set; }
-
-        public List<Course> Courses { get; set; } = [];
     }
 }
